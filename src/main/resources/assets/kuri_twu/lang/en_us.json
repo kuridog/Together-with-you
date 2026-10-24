@@ -1,0 +1,13 @@
+{
+  "itemGroup.kuri_twu": "Example Mod Tab",
+  "block.kuri_twu.example_block": "Example Block",
+  "item.kuri_twu.example_item": "Example Item",
+
+  "kuri_twu.configuration.title": "Together with you Configs",
+  "kuri_twu.configuration.section.kuri_twu.common.toml": "Together with you Configs",
+  "kuri_twu.configuration.section.kuri_twu.common.toml.title": "Together with you Configs",
+  "kuri_twu.configuration.items": "Item List",
+  "kuri_twu.configuration.logDirtBlock": "Log Dirt Block",
+  "kuri_twu.configuration.magicNumberIntroduction": "Magic Number Text",
+  "kuri_twu.configuration.magicNumber": "Magic Number"
+}
