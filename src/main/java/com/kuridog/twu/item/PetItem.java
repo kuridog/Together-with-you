@@ -1,6 +1,5 @@
 package com.kuridog.twu.item;
 
-import com.kuridog.twu.component.ModDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -74,7 +73,7 @@ public class PetItem extends Item {
     }
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        if (stack.getOrDefault(SUMMONED.get(), true)) {
+        if (stack.getOrDefault(SUMMONED.get(), false)) {
             tooltipComponents.add(Component.literal("状態：召喚中"));
         } else {
             tooltipComponents.add(Component.literal("状態：待機中"));
