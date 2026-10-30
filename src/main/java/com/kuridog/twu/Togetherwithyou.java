@@ -1,5 +1,6 @@
 package com.kuridog.twu;
 
+import com.kuridog.twu.component.ModDataComponents;
 import com.kuridog.twu.item.ModItems;
 import org.slf4j.Logger;
 
@@ -77,6 +78,7 @@ public class Togetherwithyou {
         ITEMS.register(modEventBus);
 
         ModItems.ITEMS.register(modEventBus);
+        ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
 
