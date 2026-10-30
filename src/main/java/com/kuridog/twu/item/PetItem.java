@@ -1,5 +1,7 @@
 package com.kuridog.twu.item;
 
+import com.kuridog.twu.entity.ModEntities;
+import com.kuridog.twu.entity.PetEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -22,6 +24,11 @@ public class PetItem extends Item {
 
     public PetItem(Properties properties) {
         super(properties);
+    }
+
+    public static boolean hasSummonedPet(Player player) {
+        return player.getInventory().contains(stack ->
+                stack.getItem() instanceof PetItem && stack.getOrDefault(SUMMONED.get(), false));
     }
 
     @Override
@@ -63,6 +70,12 @@ public class PetItem extends Item {
 
             if (player.getHealth() <= player.getMaxHealth() / 2) {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, BUFF_DURATION, 0));
+            }
+            if (!PetEntity.exists(player)) {
+                PetEntity pet = new PetEntity(ModEntities.WOLF_PET.get(), level);
+                pet.setOwner(player);
+                pet.setPos(player.getX(), player.getY() + 1.6, player.getZ());
+                level.addFreshEntity(pet);
             }
         }
     }
