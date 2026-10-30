@@ -10,5 +10,6 @@
   "kuri_twu.configuration.logDirtBlock": "Log Dirt Block",
   "kuri_twu.configuration.magicNumberIntroduction": "Magic Number Text",
   "kuri_twu.configuration.magicNumber": "Magic Number",
-  "item.kuri_twu.wolf_pet": "Wolf Pet"
+  "item.kuri_twu.wolf_pet": "Wolf Pet",
+  "entity.kuri_twu.wolf_pet": "Pet Wolf"
 }

@@ -1,6 +1,7 @@
 package com.kuridog.twu;
 
 import com.kuridog.twu.component.ModDataComponents;
+import com.kuridog.twu.entity.ModEntities;
 import com.kuridog.twu.item.ModItems;
 import org.slf4j.Logger;
 
@@ -76,6 +77,8 @@ public class Togetherwithyou {
         BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
         ITEMS.register(modEventBus);
+
+        ModEntities.ENTITY_TYPES.register(modEventBus);
 
         ModItems.ITEMS.register(modEventBus);
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
