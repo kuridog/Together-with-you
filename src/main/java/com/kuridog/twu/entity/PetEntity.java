@@ -19,12 +19,6 @@ import java.util.UUID;
 public class PetEntity extends Entity implements ItemSupplier {
     private UUID ownerUUID;
 
-    public static boolean exists(Player player) {
-        return !player.level().getEntitiesOfClass(PetEntity.class,
-                player.getBoundingBox().inflate(32),
-                pet -> pet.isOwnedBy(player)).isEmpty();
-    }
-
     public PetEntity(EntityType<? extends PetEntity> entityType, Level level) {
         super(entityType, level);
         this.noPhysics = true;      // ブロックをすり抜ける
@@ -33,6 +27,12 @@ public class PetEntity extends Entity implements ItemSupplier {
 
     public void setOwner(Player player) {
         this.ownerUUID = player.getUUID();
+    }
+
+    public static boolean exists(Player player) {
+        return !player.level().getEntitiesOfClass(PetEntity.class,
+                player.getBoundingBox().inflate(32),
+                pet -> pet.isOwnedBy(player)).isEmpty();
     }
 
     public Player getOwner() {
@@ -65,8 +65,8 @@ public class PetEntity extends Entity implements ItemSupplier {
             return;
         }
 
-        // 目標の位置：持ち主の右後ろ、頭の高さ
-        Vec3 offset = new Vec3(-0.8, 0, -0.8).yRot(-owner.yBodyRot * Mth.DEG_TO_RAD);
+        // 目標の位置：持ち主の左後ろ、頭の高さ
+        Vec3 offset = new Vec3(0.8, 0, -0.8).yRot(-owner.yBodyRot * Mth.DEG_TO_RAD);
         double bob = Math.sin(tickCount * 0.1) * 0.15;
         Vec3 target = owner.position().add(offset.x, 1.6 + bob, offset.z);
 
