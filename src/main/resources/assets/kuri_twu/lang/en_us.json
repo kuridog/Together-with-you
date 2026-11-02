@@ -1,7 +1,5 @@
 {
   "itemGroup.kuri_twu": "Together with you",
-  "block.kuri_twu.example_block": "Example Block",
-  "item.kuri_twu.example_item": "Example Item",
 
   "kuri_twu.configuration.title": "Together with you Configs",
   "kuri_twu.configuration.section.kuri_twu.common.toml": "Together with you Configs",

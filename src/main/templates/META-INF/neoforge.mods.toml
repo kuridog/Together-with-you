@@ -42,11 +42,12 @@ displayName="${mod_name}" #mandatory
 #credits="" #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
-#authors=""
+authors="kuridog"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Example mod description.
+Hypixel Skyblockのようなペットを追加するMODです。
+ペットを召喚すると、そばに浮かんでステータスを強化し、近くの敵を攻撃してくれます。
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.

@@ -31,7 +31,7 @@ public class PetRenderer extends EntityRenderer<PetEntity> {
         poseStack.translate(0.0, 0.25, 0.0);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0f - yaw));
 
-        poseStack.scale(1.5f, 1.5f, 1.5f);
+        poseStack.scale(1f, 1f, 1f);
 
         // ペットアイテムのモデル（立体の頭）を描く
         itemRenderer.renderStatic(entity.getItem(), ItemDisplayContext.FIXED, packedLight,
