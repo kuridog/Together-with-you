@@ -1,8 +1,8 @@
 package com.kuridog.twu;
 
+import com.kuridog.twu.client.PetRenderer;
 import com.kuridog.twu.entity.ModEntities;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -33,6 +33,6 @@ public class TogetherwithyouClient {
     }
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(ModEntities.WOLF_PET.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(ModEntities.WOLF_PET.get(), PetRenderer::new);
     }
 }

@@ -130,6 +130,8 @@ public class PetEntity extends Entity implements ItemSupplier {
         Vec3 next = position().lerp(followPos, 0.15);
         setPos(next.x, next.y, next.z);
 
+        setYRot(owner.yBodyRot);   // 持ち主と同じ方向を向く
+
         // 攻撃
         if (attackCooldown > 0) {
             attackCooldown--;
