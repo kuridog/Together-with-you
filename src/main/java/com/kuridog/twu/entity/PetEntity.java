@@ -5,6 +5,8 @@ import com.kuridog.twu.item.ModItems;
 import com.kuridog.twu.item.PetItem;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -20,10 +22,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class PetEntity extends Entity implements ItemSupplier {
-    private UUID ownerUUID;
+    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID =
+            SynchedEntityData.defineId(PetEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
     private static final double ATTACK_RANGE = 8.0;      // 攻撃範囲（ブロック）
     private static final int ATTACK_INTERVAL = 20 * 2;   // 攻撃の間隔（2秒）
@@ -38,7 +42,7 @@ public class PetEntity extends Entity implements ItemSupplier {
     }
 
     public void setOwner(Player player) {
-        this.ownerUUID = player.getUUID();
+        entityData.set(OWNER_UUID, Optional.of(player.getUUID()));
     }
 
 
@@ -49,14 +53,16 @@ public class PetEntity extends Entity implements ItemSupplier {
     }
 
     public Player getOwner() {
-        if (ownerUUID == null) {
+        Optional<UUID> uuid = entityData.get(OWNER_UUID);
+        if (uuid.isEmpty()) {
             return null;
         }
-        return level().getPlayerByUUID(ownerUUID);
+        return level().getPlayerByUUID(uuid.get());
     }
 
     public boolean isOwnedBy(Player player) {
-        return player.getUUID().equals(ownerUUID);
+        Optional<UUID> uuid = entityData.get(OWNER_UUID);
+        return uuid.isPresent() && uuid.get().equals(player.getUUID());
     }
 
     private void attack(Monster target, Player owner) {
@@ -104,33 +110,28 @@ public class PetEntity extends Entity implements ItemSupplier {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
+        builder.define(OWNER_UUID, Optional.empty());
     }
 
     @Override
     public void tick() {
         super.tick();
+        Player owner = getOwner();
+
+        // クライアント：画面に映る位置を、手元で計算する
         if (level().isClientSide()) {
+            if (owner != null) {
+                followOwner(owner);
+            }
             return;
         }
 
-        // 持ち主がいない・倒れた・召喚中のアイテムを持っていない → 消える
-        Player owner = getOwner();
+        // サーバー：消えるかどうかの判定
         if (owner == null || !owner.isAlive() || !PetItem.hasSummonedPet(owner)) {
             discard();
             return;
         }
-
-        // 目標の位置：持ち主の左後ろ、頭の高さ
-        Vec3 offset = new Vec3(0.8, 0, -0.8).yRot(-owner.yBodyRot * Mth.DEG_TO_RAD);
-        double bob = Math.sin(tickCount * 0.1) * 0.15;
-        Vec3 followPos = owner.position().add(offset.x, 1.6 + bob, offset.z);
-
-        // 今の位置から、目標に向かって15%だけ近づく
-        Vec3 next = position().lerp(followPos, 0.15);
-        setPos(next.x, next.y, next.z);
-
-        setYRot(owner.yBodyRot);   // 持ち主と同じ方向を向く
+        followOwner(owner);
 
         // 攻撃
         if (attackCooldown > 0) {
@@ -142,6 +143,27 @@ public class PetEntity extends Entity implements ItemSupplier {
         if (target != null) {
             attack(target, owner);
             attackCooldown = ATTACK_INTERVAL;
+        }
+    }
+
+    private void followOwner(Player owner) {
+        // 目標の位置：持ち主の左後ろ、頭の高さ
+        Vec3 offset = new Vec3(0.8, 0, -0.8).yRot(-owner.yBodyRot * Mth.DEG_TO_RAD);
+        double bob = Math.sin(tickCount * 0.1) * 0.15;
+        Vec3 followPos = owner.position().add(offset.x, 1.6 + bob, offset.z);
+
+        // 今の位置から、目標に向かって15%だけ近づく
+        Vec3 next = position().lerp(followPos, 0.15);
+        setPos(next.x, next.y, next.z);
+
+        setYRot(owner.yBodyRot);   // 持ち主と同じ方向を向く
+    }
+
+    @Override
+    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+        // 持ち主が分かっているなら、サーバーから届く位置は使わず、手元の計算を優先する
+        if (getOwner() == null) {
+            super.lerpTo(x, y, z, yRot, xRot, steps);
         }
     }
 
